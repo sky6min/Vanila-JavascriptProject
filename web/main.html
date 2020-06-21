@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+    
     <head>
         <meta charset="utf-8"/>
         <link rel="stylesheet" type="text/css" href="/stylesheet/style.css">
@@ -16,15 +17,15 @@
                     <li>강의지원시스템</li>
                     <li>></li>
                     <li>내 강의실 홈</li>
-                    <li><form class="inline" name="student" method="POST" action="/form">
-                        <input class="inline" type="text" name="stuName">
-                        <input class="inline" type="submit" value="조회">
-                        <label class="inline"><input type="checkbox" name="stuJob" value="web">과목명</label>
-                        <label class="inline"><input type="checkbox" name="stuJob" value="mobile">과제명</label></form></li>
+                    <li>
+                        <input type="text" name="contents" id="contents">
+                        <input id="submit" type="button" value="조회">
+                        <label><input type="radio" name="name" id="name" value="subject" checked="checked">과목명</label>
+                        <label><input type="radio" name="name" id="name" value="homework">과제명</label></li>
                 </ul>
             </div>
             <div id='table'>
-                <div id='tb_title'> <span id='title'>나의 과제 (미해결)</span>
+                <div id='tb_title'> <span id='title'>나의 과제 </span>
                     <div style='float: right; margin-right:10px'>
                         과제 목록 : 
                         <input type="button" id="button" onclick="button1_click();" value="미해결" />
@@ -32,20 +33,11 @@
                     </div>
                 </div> 
                 <ul id='list' style='padding:0px;overflow:auto;'>
-                    <li> <p>dasds</p></li>
-                    <li> <p>dasds</p></li>
-                    <li> <p>dasds</p></li>
-                    <li> <p>dasds</p></li>
-                    <li> <p>dasds</p></li>
-                    <li> <p>dasds</p></li>
-                    <li> <p>dasds</p></li>
-                    <li> <p>dasds</p></li>
-                    <li> <p>dasds</p></li>
-                    <li> <p>dasds</p></li>
-                    <li> <p>dasds</p></li>
+
                 </ul>
             </div>
         </div>
+        <script type="text/javascript" src="./js/main_cms.js"></script>
     </body>
 </html>
 
