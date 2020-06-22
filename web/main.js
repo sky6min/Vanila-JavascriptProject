@@ -11,7 +11,8 @@ app.listen(3000, () => {
 var Data = new Array(0) // 전체 과제 리스트
 var NData = new Array(0) // 미해결 과제 리스트
 var FData = new Array(0) // 해결 과제 리스트
-
+var sig = '0`'
+var sig1 = '1`'
 
 
 
@@ -84,9 +85,53 @@ app.post('/flist',(req,res)=>{
     res.send(FData)});
 
 app.post('/post', (req,res)=>{
-    con = req.body.con
-    title = req.body.title
+    var temp
+    console.log(req.body.hid)
+    var title = req.body.title
+    var con = req.body.con
+    var hid = req.body.hid
+    title = title.toString()
+    con = con.toString()
+    var newdata = title.concat("|",con,"\r")
+    newdata = sig1.concat(newdata)
+    console.log(newdata)
 
+    var hid2 = sig.concat(hid)
+    temp = utf8Text.toString().replace(hid2,newdata)
+    let euckrStr = iconv.encode(temp, 'euc-kr')
+    fs.writeFileSync('data.txt',euckrStr,{encoding: 'binary'})
+    var Data2 = new Array(0) // 전체 과제 리스트
+    var NData2 = new Array(0) // 미해결 과제 리스트
+    var FData2 = new Array(0) // 해결 과제 리스트
+    var lineArray2 = temp.toString().split('\n');
+    for(var i=0; i<lineArray2.length; i++)
+    {
+        var Hwork = {
+            Sname: "",
+            Pname: "",
+            Hname: "",
+            date: "",
+            state: "",
+            contents: ""
+        }
+        temp = lineArray2[i].split('`');
+        Hwork.Sname = temp[0]
+        Hwork.Pname = temp[1]
+        Hwork.Hname = temp[2]
+        Hwork.date = temp[3]
+        Hwork.state = temp[4]
+        Hwork.contents = temp[5]
+        Data2.push(Hwork)
+        if(Number(Hwork.state) == 0)
+        {
+            NData2.push(Hwork)
+        }else{
+            FData2.push(Hwork)
+        }
+    }
+    Data = Data2
+    NData = NData2
+    FData = FData2
     res.sendStatus(200);
     });
 

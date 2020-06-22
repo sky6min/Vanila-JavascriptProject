@@ -7,8 +7,7 @@ var Hwork = {
     contents: ""
 }
 var tempData = new Array(0)
-var tempStatData = new Array(0)
-var tempContData = new Array(0)
+var tempContData
 
 var ck
 
@@ -18,6 +17,7 @@ var index=0
 
 
 window.onload = function () {
+    tempContData = new Array(0)
     ck = document.getElementById('list')
     document.getElementById('submit').onclick=()=>{
         var names = document.getElementsByName('name');
@@ -101,10 +101,10 @@ function setSub1(num,subli) {
     var div = document.createElement('div')
     var div2 = document.createElement('div')
     var label = document.createElement('label')
-    var label2 = document.createElement('label')
+    var label2 = document.createElement('p')
     var input = document.createElement('input')
     var submit = document.createElement('input')
-    var cont = document.createElement('input')
+    var cont = document.createElement('textarea')
     submit.style.float="right"
     submit.style.marginRight="10px"
     submit.style.marginTop="5px"
@@ -117,10 +117,10 @@ function setSub1(num,subli) {
     label2.innerHTML="내용 : "
     input.setAttribute('type','text')
     input.setAttribute('name','title')
-    cont.setAttribute('type','text')
+    cont.setAttribute('form','inform')
     cont.setAttribute('name','cont')
-    cont.style.width="740px"
-    cont.style.height="120px"
+    cont.style.width="60vw"
+    cont.style.height="10vh"
     cont.style.marginLeft="5px"
     input.style.width="300px"
     div.style.position="relative"
@@ -130,10 +130,10 @@ function setSub1(num,subli) {
     div2.style.marginTop="30px"
     div2.style.position="relative"
     label.appendChild(input)
-    label2.appendChild(cont)
     div.appendChild(label)
     div.appendChild(submit)
     div2.appendChild(label2)
+    div2.appendChild(cont)
     div.appendChild(div2)
 
     div.style.backgroundColor="white"
@@ -148,17 +148,21 @@ function setSub2(num,subli2) {
     subli2.style.display="none"
     var div = document.createElement('div')
     var title = document.createElement('P')
-    var cont = document.createElement('cont')
     div.style.position="relative"
     div.style.height="200px"
     div.style.width="auto"
     div.style.backgroundColor="white"
     div.style.border="1px solid"
+    div.setAttribute('class','wri')
     var con = Hwork.contents.toString().split('|');
     title.innerText=con[0]
-    cont.innerText=con[1]
     div.appendChild(title)
-    div.appendChild(cont)
+    for(var i=1;i<con.length;i++)
+    {
+        var cont = document.createElement('p')
+        cont.innerText=con[i]
+        div.appendChild(cont)
+    }
     subli2.appendChild(div)
 }
 
@@ -183,8 +187,6 @@ function setInit(num,data){
         ul.appendChild(subli2)
         li.appendChild(ul)
         ck.appendChild(li)
-        tempStatData.push(Hwork.state)
-        tempContData.push(Hwork.contents)
         num += 1
         index += 1
     }
@@ -237,6 +239,7 @@ function setList(num,li) {
     Hwork.date=tempData[num].date
     Hwork.contents= tempData[num].contents
     Hwork.state=tempData[num].state
+    tempContData.push(tempData[num].contents)
     if(Number(Hwork.state) == 0){
     bt2.setAttribute("type","button")
     bt2.setAttribute("id",index.toString())
@@ -247,6 +250,7 @@ function setList(num,li) {
     bt2.style.marginTop="5px"
     bt2.style.boxShadow="1px 1px 1px"
     bt2.setAttribute("value","작성")
+    bt2.setAttribute("class","write")
     div.appendChild(bt2)
     }
     div2.style.height="30px"
@@ -297,6 +301,7 @@ function bt1_click(clicked_id){
         node.lastChild.style.display="none"
     }
     toggle1[parseInt(clicked_id)]+= 1
+
 } 
 
 // 작성 버튼
@@ -318,13 +323,17 @@ function bt2_click(clicked_id){
 
 //작성 완료 버튼
 function bt3_click(clicked_id){
-    var title = document.getElementsByName('title')[parseInt(clicked_id)].value;
-    var cont = document.getElementsByName('cont')[parseInt(clicked_id)].value;
+    var title = document.getElementsByName('title')[parseInt(clicked_id)].value
+    var cont = document.getElementsByName('cont')[parseInt(clicked_id)].value
+    var wriBt = document.getElementsByClassName('write')[parseInt(clicked_id)]
+    var wriCont = document.getElementsByClassName('wri')[parseInt(clicked_id)]
+    cont = cont.replace(/(?:\r\n|\r|\n)/g, '|')
     $.post({
     url:"/post",
     data:{
         title:title,
-        con:cont
+        con:cont,
+        hid:tempContData[clicked_id]
     },
     success:function(data){ // 성공 시 호출 콜백
         window.location.reload()
