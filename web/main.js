@@ -11,14 +11,14 @@ app.listen(3000, () => {
 var Data = new Array(0) // 전체 과제 리스트
 var NData = new Array(0) // 미해결 과제 리스트
 var FData = new Array(0) // 해결 과제 리스트
-var SnameData = new Array(0)  // 과목명 리스트
-var HnameData = new Array(0) // 과제명 리스트
+
+
 
 
 var temp
 var content = fs.readFileSync("data.txt",'binary');
 var utf8Text = iconv.decode(content, "euc-kr");
-lineArray = utf8Text.toString().split('\n');
+var lineArray = utf8Text.toString().split('\n');
 for(var i=0; i<lineArray.length; i++)
 {
     var Hwork = {
@@ -27,7 +27,7 @@ for(var i=0; i<lineArray.length; i++)
         Hname: "",
         date: "",
         state: "",
-        contents: "contents"
+        contents: ""
     }
     temp = lineArray[i].split('`');
     Hwork.Sname = temp[0]
@@ -35,10 +35,10 @@ for(var i=0; i<lineArray.length; i++)
     Hwork.Hname = temp[2]
     Hwork.date = temp[3]
     Hwork.state = temp[4]
+    Hwork.contents = temp[5]
     Data.push(Hwork)
     if(Number(Hwork.state) == 0)
     {
-        console.log(Hwork.state)
         NData.push(Hwork)
     }else{
         FData.push(Hwork)
@@ -48,11 +48,29 @@ for(var i=0; i<lineArray.length; i++)
 app.get('/', (req, res) => res.sendFile(__dirname+"/main.html"));
 
 app.post('/search',(req,res)=>{
-    console.log(req.body.name)
-    console.log(req.body.con)
-    if(req.body.con == "웹페이지")
+    var SnameData = new Array(0)  // 과목명 리스트
+    var HnameData = new Array(0) // 과제명 리스트
+    if(req.body.name == "subject") // 과목명 입력이 들어오면
     {
-        console.log("adsadad")
+        for(var i =0; i<Data.length;i++)
+        {
+            var temp = Data[i].Sname.toString();
+            if(temp.indexOf(req.body.con) != -1)
+            {
+                SnameData.push(Data[i])
+            }
+        }
+        res.send(SnameData)
+    }else{
+        for(var i =0; i<Data.length;i++)
+        {
+            var temp = Data[i].Hname.toString();
+            if(temp.indexOf(req.body.con) != -1)
+            {
+                HnameData.push(Data[i])
+            }
+        }
+        res.send(HnameData)
     }
     });
 
@@ -65,6 +83,12 @@ app.post('/nlist',(req,res)=>{
 app.post('/flist',(req,res)=>{
     res.send(FData)});
 
+app.post('/post', (req,res)=>{
+    con = req.body.con
+    title = req.body.title
+
+    res.sendStatus(200);
+    });
 
 
 

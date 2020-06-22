@@ -9,6 +9,8 @@ var Hwork = {
     contents: "contents"
 }
 
-Data.push(Hwork)
+var str = "dsadasdad|qweqweqwe"
+str.split('|')
+console.log(str.split('|'))
 
-console.log(Data[0].Sname)
+Data.push(Hwork)

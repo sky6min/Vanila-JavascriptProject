@@ -4,7 +4,7 @@ var Hwork = {
     Hname: "",
     date: "",
     state: "",
-    contents: "contents"
+    contents: ""
 }
 var tempData = new Array(0)
 var tempStatData = new Array(0)
@@ -18,6 +18,7 @@ var index=0
 
 
 window.onload = function () {
+    ck = document.getElementById('list')
     document.getElementById('submit').onclick=()=>{
         var names = document.getElementsByName('name');
         var value;
@@ -27,21 +28,29 @@ window.onload = function () {
             }
         }
         var contents = document.getElementById('contents').value;
+        var num = 0
         $.post({
         url:"/search",
         data:{
             con:contents,
             name:value
         },
-        success:()=>vex.dialog.alert('업데이트 완료'),
-        error:()=>vex.dialog.alert('값을 제대로 입력하셔야 합니다!')
+        success:function(data){ // 성공 시 호출 콜백
+            console.log("asdasdas")
+            if (ck.childElementCount != 0) {
+                while (ck.childElementCount > 0) {
+                    ck.removeChild(ck.firstChild)
+                }
+            }
+            setInit(num,data)
+            }
         });
+        var title = document.getElementById('title')
+        title.innerHTML='나의 과제'
     }
-
-    ck = document.getElementById('list')
     addList()
 }
-
+//전체 목록 리스트 Ajax
 function addList() {
     var num = 0
     $.post({
@@ -54,6 +63,7 @@ function addList() {
         });
 }
 
+//해결 목록 리스트 Ajax
 function addFList() {
     var num = 0
     var title = document.getElementById('title')
@@ -68,6 +78,7 @@ function addFList() {
         });
 }
 
+//미해결 목록 리스트 Ajax
 function addNList() {
     var num = 0
     var title = document.getElementById('title')
@@ -77,23 +88,83 @@ function addNList() {
         data:{
         },
         success:function(data){ // 성공 시 호출 콜백
+            
             setInit(num,data)
             }
         });
 }
 
+// 작성 화면
 function setSub1(num,subli) {
-    var div = document.createElement('div');
+    subli.style.position="relative"
+    subli.style.display="none"
+    var div = document.createElement('div')
+    var div2 = document.createElement('div')
+    var label = document.createElement('label')
+    var label2 = document.createElement('label')
+    var input = document.createElement('input')
+    var submit = document.createElement('input')
+    var cont = document.createElement('input')
+    submit.style.float="right"
+    submit.style.marginRight="10px"
+    submit.style.marginTop="5px"
+    submit.setAttribute('id',index.toString())
+    submit.setAttribute('type','button')
+    submit.setAttribute('value',"작성완료")
+    submit.setAttribute('onclick','bt3_click(this.id)')
+    label.innerHTML="제목 : "
+    label.style.float="left"
+    label2.innerHTML="내용 : "
+    input.setAttribute('type','text')
+    input.setAttribute('name','title')
+    cont.setAttribute('type','text')
+    cont.setAttribute('name','cont')
+    cont.style.width="740px"
+    cont.style.height="120px"
+    cont.style.marginLeft="5px"
+    input.style.width="300px"
+    div.style.position="relative"
+    div.style.height="200px"
+    div.style.width="auto"
+    div2.style.width="800px"
+    div2.style.marginTop="30px"
+    div2.style.position="relative"
+    label.appendChild(input)
+    label2.appendChild(cont)
+    div.appendChild(label)
+    div.appendChild(submit)
+    div2.appendChild(label2)
+    div.appendChild(div2)
 
+    div.style.backgroundColor="white"
+    div.style.border="1px solid"
+
+    subli.appendChild(div)
 }
 
+// 상세 화면
 function setSub2(num,subli2) {
-
+    subli2.style.position="relative"
+    subli2.style.display="none"
+    var div = document.createElement('div')
+    var title = document.createElement('P')
+    var cont = document.createElement('cont')
+    div.style.position="relative"
+    div.style.height="200px"
+    div.style.width="auto"
+    div.style.backgroundColor="white"
+    div.style.border="1px solid"
+    var con = Hwork.contents.toString().split('|');
+    title.innerText=con[0]
+    cont.innerText=con[1]
+    div.appendChild(title)
+    div.appendChild(cont)
+    subli2.appendChild(div)
 }
 
-function setSub3(num,subli2) {
 
-}
+
+// 윈도우 시작 시
 function setInit(num,data){
     tempData=data;
     while(num < data.length)
@@ -103,18 +174,13 @@ function setInit(num,data){
         var subli = document.createElement('li')
         var subli2 = document.createElement('li')
         ul.setAttribute("class","sub")
-        subli.style.position="relative"
-        subli.style.display="none"
-        subli.innerHTML="111111111"
-        subli2.style.position="relative"
-        subli2.style.display="none"
-        subli2.innerHTML="2222222"
+        ul.style.padding="0px"
+        setList(num,li)
         setSub1(num,subli)
         setSub2(num,subli2)
-        setList(num,li)
+
         ul.appendChild(subli)
         ul.appendChild(subli2)
-        console.log(Hwork.state)
         li.appendChild(ul)
         ck.appendChild(li)
         tempStatData.push(Hwork.state)
@@ -124,7 +190,7 @@ function setInit(num,data){
     }
     index=0
 }
-
+// 윈도우 시작 시 리스트 그리기
 function setList(num,li) {
     var div = document.createElement('div')
     var div2 = document.createElement('div')
@@ -134,6 +200,7 @@ function setList(num,li) {
     var span4 = document.createElement('span')
     var bt1 = document.createElement('input')
     var bt2 = document.createElement('input')
+    div.style.height="40px"
     li.style.border="1px solid"
     li.style.display="block"
     li.style.margin="0px"
@@ -163,6 +230,14 @@ function setList(num,li) {
     bt1.style.marginTop="5px"
     bt1.style.boxShadow="1px 1px 1px"
     bt1.setAttribute("value","상세")
+    div.appendChild(bt1)
+    Hwork.Sname=tempData[num].Sname 
+    Hwork.Pname=tempData[num].Pname
+    Hwork.Hname=tempData[num].Hname
+    Hwork.date=tempData[num].date
+    Hwork.contents= tempData[num].contents
+    Hwork.state=tempData[num].state
+    if(Number(Hwork.state) == 0){
     bt2.setAttribute("type","button")
     bt2.setAttribute("id",index.toString())
     bt2.setAttribute("onclick","bt2_click(this.id)")
@@ -172,21 +247,15 @@ function setList(num,li) {
     bt2.style.marginTop="5px"
     bt2.style.boxShadow="1px 1px 1px"
     bt2.setAttribute("value","작성")
-    div.style.height="40px"
+    div.appendChild(bt2)
+    }
     div2.style.height="30px"
-    Hwork.Sname=tempData[num].Sname 
-    Hwork.Pname=tempData[num].Pname
-    Hwork.Hname=tempData[num].Hname
-    Hwork.date=tempData[num].date
-    Hwork.contents= "웹페이지 구축 해봅니다."
-    Hwork.state=tempData[num].state
+
     span.innerHTML=Hwork.Hname
     span2.innerHTML=Hwork.Pname
     span3.innerHTML=Hwork.Sname
     span4.innerHTML=Hwork.date
     div.appendChild(span)
-    div.appendChild(bt1)
-    div.appendChild(bt2)
     div2.appendChild(span4)
     div2.appendChild(span3)
     div2.appendChild(span2)
@@ -194,6 +263,7 @@ function setList(num,li) {
     li.appendChild(div2)
 }
 
+//미해결 목록 버튼
 function button1_click(){
     if (ck.childElementCount != 0) {
         while (ck.childElementCount > 0) {
@@ -203,6 +273,7 @@ function button1_click(){
     addNList()
 }
 
+//해결 목록 버튼
 function button1_click2(){
     if (ck.childElementCount != 0) {
         while (ck.childElementCount > 0) {
@@ -212,8 +283,9 @@ function button1_click2(){
     addFList()
 }
 
+// 상세 버튼
 function bt1_click(clicked_id){
-
+    console.log(clicked_id)
     var node = document.getElementsByClassName('sub')[parseInt(clicked_id)]
     if(toggle1[parseInt(clicked_id)]%2 == 0){
         node.lastChild.style.display="block"
@@ -227,8 +299,9 @@ function bt1_click(clicked_id){
     toggle1[parseInt(clicked_id)]+= 1
 } 
 
+// 작성 버튼
 function bt2_click(clicked_id){
-   
+    console.log(clicked_id)
      var node = document.getElementsByClassName('sub')[parseInt(clicked_id)]
     if(toggle2[parseInt(clicked_id)]%2 == 0){
         node.firstChild.style.display="block"
@@ -243,4 +316,18 @@ function bt2_click(clicked_id){
     toggle2[parseInt(clicked_id)]+= 1
 }
 
-
+//작성 완료 버튼
+function bt3_click(clicked_id){
+    var title = document.getElementsByName('title')[parseInt(clicked_id)].value;
+    var cont = document.getElementsByName('cont')[parseInt(clicked_id)].value;
+    $.post({
+    url:"/post",
+    data:{
+        title:title,
+        con:cont
+    },
+    success:function(data){ // 성공 시 호출 콜백
+        window.location.reload()
+        }
+    });
+} 
