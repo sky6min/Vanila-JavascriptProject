@@ -2,7 +2,7 @@
 Development of web service that provides CMS function using Express
 
 ### LMS 종합 과제 관리 시스템을 제작합니다.
-#### - 바닐라 자바스크리트만을 이용하여 Single Page app으로 제작하는 것을 목적으로, Express 서버를 이용하여 DB없이 구현하는 원시적인 서비스를 제작하였습니다. Express 서버에서 서버가 종료되어도 정보가 유지되게 하기위해서, 텍스트 파일에 정보를 저장하였으며, 인코딩 & 디코딩 과정을 위해 iconv-lite 패키지를 추가하였으며, 그 외의 파일에 접근하기 위해express.static('public')를 app에 추가하였습니다.
+#### - 바닐라 자바스크리트만을 이용하여 Single Page app으로 제작하는 것을 목적으로, Express 서버를 이용하였고 DB없이 원시적인 서비스를 제작하였습니다. Express 서버에서 서버가 종료되어도 정보가 유지되게 하기위해서, 텍스트 파일에 정보를 저장하였으며, 인코딩 & 디코딩 과정을 위해 iconv-lite 패키지를 추가하였으며, 그 외의 파일에 접근하기 위해express.static('public')를 app에 추가하였습니다.
 
 #### 1. 초기화면
 #### main.js에서 데이터 리스트(Data, NData, FData)중에 Data(전체 목록)을 ajax로 전달받아 
